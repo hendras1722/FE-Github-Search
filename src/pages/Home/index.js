@@ -1,8 +1,35 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { logo } from "../../Components/images";
 import { AiOutlineSearch } from "react-icons/ai";
+import { getData } from "../../utils/fetch";
+import { ApiContext } from "../../useContext";
+import { useHistory } from "react-router";
 
 const Home = () => {
+  const [stateInput, setStateInput] = useState(null);
+  const apiContext = useContext(ApiContext);
+  const { state, dispatch } = apiContext;
+  const history = useHistory();
+  console.log(state, "inisdtate");
+  const getSearchData = () => {
+    getData(stateInput)
+      .then((res) => {
+        dispatch({
+          type: "GET_USER_SUCCESS",
+          payload: res,
+        });
+        if (res.node_id) {
+          history.push("/user/" + res.node_id);
+        }
+      })
+      .catch((e) => {
+        dispatch({
+          type: "GET_USER_FAILURE",
+          payload: e.response.data.message,
+        });
+        history.push("/search");
+      });
+  };
   return (
     <Fragment>
       <div
@@ -42,6 +69,9 @@ const Home = () => {
                   borderRadius: 20,
                   paddingLeft: 40,
                 }}
+                onChange={(e) => setStateInput(e.target.value)}
+                onKeyPress={(ev) => ev.key === "Enter" && getSearchData()}
+                placeholder="Search UserName. Press Enter"
               />
             </div>
           </div>

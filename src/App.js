@@ -1,13 +1,18 @@
 import { Fragment } from "react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Redirect } from "react-router-dom";
 import Router from "./Route";
+import ApiContextProvider from "./useContext";
+import "./App.css";
 
 function App() {
   return (
     <Fragment>
-      <BrowserRouter>
-        <Router />
-      </BrowserRouter>
+      <ApiContextProvider>
+        <BrowserRouter>
+          <Router />
+          <Redirect to="/search" />
+        </BrowserRouter>
+      </ApiContextProvider>
     </Fragment>
   );
 }
